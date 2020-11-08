@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcryptjs = require("bcryptjs");
-const { hashPassword } = require("../utils/security.util");
+const { hashPassword, matchPassword } = require("../utils/security.util");
 const userModel = {};
 const { userData } = require("./seedData");
 
@@ -95,7 +94,7 @@ userSchema.statics.findByCredentials = async (username, email, password) => {
   let user;
 
   if (username) {
-    user = await User.findOne({ username })
+    user = await userModel.User.findOne({ username })
       .populate("roles")
       .populate("holdings")
       .populate("members")
@@ -103,7 +102,7 @@ userSchema.statics.findByCredentials = async (username, email, password) => {
   }
 
   if (!user && email) {
-    user = await User.findOne({ email })
+    user = await userModel.User.findOne({ email })
       .populate("roles")
       .populate("holdings")
       .populate("members")
@@ -114,7 +113,7 @@ userSchema.statics.findByCredentials = async (username, email, password) => {
     throw new Error(`Login failed!`);
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await matchPassword(password, user.password);
   if (!isMatch) {
     throw new Error(`Login failed!`);
   }

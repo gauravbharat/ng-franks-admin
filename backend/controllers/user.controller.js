@@ -1,4 +1,5 @@
 const { returnError } = require("../utils/error.util");
+const { generateToken } = require("../utils/security.util");
 const {
   validateIdentifier,
   process: { PROCESS_USER },
@@ -27,7 +28,44 @@ exports.getAllUsers = async (req, res, next) => {
     );
   }
 };
-exports.loginUser = async (req, res, next) => {};
+exports.loginUser = async (req, res, next) => {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return returnError(
+      "login-user",
+      "No user login data received!",
+      400,
+      "No user login data received!",
+      res
+    );
+  }
+
+  // HARD-CODED VALUES
+  // req.body = {
+  //   username: "jyotiee",
+  //   password: "test@123",
+  // };
+
+  try {
+    const user = await User.findByCredentials(
+      req.body.username,
+      req.body.email,
+      req.body.password
+    );
+
+    const token = await generateToken(user._id, user.username);
+
+    res.status(201).json({
+      message: "User logged-in!",
+      userData: {
+        user,
+        token,
+        expiresIn: process.env.EXPIRES_IN_SEC,
+      },
+    });
+  } catch (error) {
+    return returnError("login-user", error, 500, "User login failed!", res);
+  }
+};
 exports.getUserEditData = async (req, res, next) => {
   try {
     const allHoldingOrgs = await Holding.find({});
