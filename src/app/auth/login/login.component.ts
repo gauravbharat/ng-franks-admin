@@ -69,8 +69,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         //show nothing, handled by inteceptor
         this.isLoading = false;
       });
-
-    this.isLoading = false;
   }
 
   onForgotPassword() {

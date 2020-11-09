@@ -88,10 +88,9 @@ export class UserAdminComponent implements OnInit, OnDestroy {
       });
 
       this.basicFormGroup.controls.username.disable();
+      this.isLoading = false;
+      this.showLoading.emit(false);
     }
-
-    this.isLoading = false;
-    this.showLoading.emit(false);
   }
 
   ngOnDestroy(): void {

@@ -52,14 +52,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._adminService.getStaticData().subscribe(
       (response) => {
         this.staticData = response;
+        this.isLoading = false;
       },
       (error) => {
         console.log(error);
         this.isLoading = false;
       }
     );
-
-    this.isLoading = false;
   }
 
   ngOnDestroy(): void {
@@ -121,10 +120,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         // console.log('_getAllUsers', response);
         this._allUsers = response.allUsers;
         await this._setDataSource();
-        this.isLoading = false;
       },
       (error) => {
-        this.isLoading = false;
         console.log(error);
       }
     );
