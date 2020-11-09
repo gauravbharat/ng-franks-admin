@@ -19,7 +19,8 @@ interface AuthListenerData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  currentUser: any;
+  private _currentUser: any;
+  private _tokenTimer: any;
   private _authStatusListener = new BehaviorSubject<{
     authData: AuthListenerData;
   }>({
@@ -50,18 +51,24 @@ export class AuthService {
         .post<{ message: string; userData: any }>(`${API_URL}/login`, authData)
         .subscribe(
           (response) => {
-            this.currentUser = response.userData;
-            console.log(this.currentUser);
-            this._updateListener(AuthType.UPDATE_USER);
-            resolve({
-              isSuccess: true,
-              username: this.currentUser.user.username,
-            });
-            this._router.navigate(['/admin']);
+            if (response.userData.token) {
+              this._currentUser = response.userData;
+              console.log(this._currentUser);
+
+              this._setAuthTimer(response.userData.expiresIn);
+
+              this._updateListener(AuthType.UPDATE_USER);
+              resolve({
+                isSuccess: true,
+                username: this._currentUser.user.username,
+              });
+
+              this._saveAuthData();
+              this._router.navigate(['/admin']);
+            }
           },
           (error) => {
-            this.currentUser = null;
-            this._updateListener(AuthType.RESET_USER);
+            this._resetAuthData();
             console.log('login error', error);
             reject({ isSuccess: false, error });
           }
@@ -70,14 +77,20 @@ export class AuthService {
   }
 
   logout() {
-    this.currentUser = null;
-    this._updateListener(AuthType.RESET_USER);
+    this._resetAuthData();
     this._router.navigate(['/']);
+  }
+
+  private _resetAuthData() {
+    this._currentUser = null;
+    clearTimeout(this._tokenTimer);
+    this._clearAuthData();
+    this._updateListener(AuthType.RESET_USER);
   }
 
   private _updateListener(authRequestType: AuthType) {
     if (authRequestType === AuthType.UPDATE_USER) {
-      const { username, _id, avatar, name } = this.currentUser.user;
+      const { username, _id, avatar, name } = this._currentUser.user;
 
       this._authStatusListener.next({
         authData: {
@@ -86,7 +99,7 @@ export class AuthService {
           userId: _id,
           avatar,
           name,
-          token: this.currentUser.token,
+          token: this._currentUser.token,
         },
       });
     } else {
@@ -100,6 +113,87 @@ export class AuthService {
           token: null,
         },
       });
+    }
+  }
+
+  /** Changes to persist user login, per the received expiresIn timer */
+  private _setAuthTimer(duration: number) {
+    this._tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000);
+  }
+
+  private _saveAuthData() {
+    localStorage.setItem('token', this._currentUser.token);
+    localStorage.setItem('userId', this._currentUser.user._id);
+    localStorage.setItem('username', this._currentUser.user.username);
+    localStorage.setItem('avatar', this._currentUser.user.avatar);
+    localStorage.setItem('name', this._currentUser.user.name);
+
+    const now = new Date();
+    const expirationDate = new Date(
+      now.getTime() + this._currentUser.expiresIn * 1000
+    );
+
+    //serialized expiration date stored
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+
+  private _clearAuthData() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('avatar');
+    localStorage.removeItem('name');
+  }
+
+  private _getAuthData() {
+    const authData = {
+      token: localStorage.getItem('token'),
+      userId: localStorage.getItem('userId'),
+      username: localStorage.getItem('username'),
+      avatar: localStorage.getItem('avatar'),
+      name: localStorage.getItem('name'),
+      expirationDate: localStorage.getItem('expiration'),
+    };
+
+    if (!authData.token || !authData.expirationDate) {
+      return;
+    }
+
+    // De-serialize expiration date
+    return {
+      ...authData,
+      expirationDate: new Date(authData.expirationDate),
+    };
+  }
+
+  autoAuthUser() {
+    const authInformation = this._getAuthData();
+    if (!authInformation) return;
+
+    // Check that the token expiration date is in the future
+    const now = new Date();
+    const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
+
+    if (expiresIn > 0) {
+      /** This needs to be worked on if the original user data fetched from the API is required
+       * Use IndexedDB instead to store complex objects */
+      this._currentUser = {
+        user: {
+          _id: authInformation.userId,
+          username: authInformation.username,
+          avatar: authInformation.avatar,
+          name: authInformation.name,
+        },
+        token: authInformation.token,
+        expiresIn,
+      };
+      this._setAuthTimer(expiresIn / 1000);
+      this._updateListener(AuthType.UPDATE_USER);
+    } else {
+      this.logout();
     }
   }
 }

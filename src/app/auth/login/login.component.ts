@@ -12,7 +12,7 @@ import { SnackbarService } from '../../utils/snackbar.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   isLoading = true;
   hide = false;
   username: String;
@@ -25,15 +25,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // this._snackbarService.showSuccess(
-    //   `Welcome to Frank's Admin Page, ${'jyotiee'}!`
-    // );
     this.isLoading = false;
   }
 
-  ngOnDestroy(): void {
-    console.log('inside ngOnDestroy');
-  }
+  // ngOnDestroy(): void {
+  //   console.log('inside ngOnDestroy');
+  // }
 
   onLogin(form: NgForm) {
     if (form.invalid) return;
