@@ -39,6 +39,8 @@ exports.loginUser = async (req, res, next) => {
     );
   }
 
+  console.log(req.body);
+
   // HARD-CODED VALUES
   // req.body = {
   //   username: "jyotiee",
@@ -63,7 +65,7 @@ exports.loginUser = async (req, res, next) => {
       },
     });
   } catch (error) {
-    return returnError("login-user", error, 500, "User login failed!", res);
+    return returnError("login-user", error, 400, "User login failed!", res);
   }
 };
 exports.getUserEditData = async (req, res, next) => {

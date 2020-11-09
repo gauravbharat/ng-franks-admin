@@ -7,7 +7,7 @@
 <div class="login-container" *ngIf="!isLoading">
   <h1 class="mat-display-3">Frank's User Admin</h1>
   <p>Please use either your valid username or email to login</p>
-  <mat-card>
+  <mat-card [ngClass]="['mat-elevation-z5']">
     <form #loginForm="ngForm" (submit)="onLogin(loginForm)">
       <mat-form-field appearance="fill">
         <mat-label>Email</mat-label>

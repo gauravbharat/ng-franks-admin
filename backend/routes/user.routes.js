@@ -7,7 +7,7 @@ const UserController = require("../controllers/user.controller");
 router.get("/all", checkAuth, UserController.getAllUsers);
 
 // Login user
-router.get("/login", UserController.loginUser);
+router.post("/login", UserController.loginUser);
 
 // Get all static data for user edits
 router.get("/edit-data", checkAuth, UserController.getUserEditData);

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { AuthService } from '../auth.service';
+import { AuthData } from '../../app.constants';
 
 /** Material Snackbar */
 import { SnackbarService } from '../../utils/snackbar.service';
@@ -16,6 +17,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   hide = false;
   username: String;
   email: String;
+  authData: AuthData;
 
   constructor(
     private _authService: AuthService,
@@ -38,8 +40,26 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!form.value.email && !form.value.username) return;
 
     this.isLoading = true;
-    console.log(form.value.username);
-    console.log(form.value.password);
+
+    this.authData = {
+      username: form.value.username,
+      email: form.value.email,
+      password: form.value.password,
+    };
+
+    this._authService
+      .login(this.authData)
+      .then((data: { isSuccess: boolean; username: string }) => {
+        data.isSuccess &&
+          this._snackbarService.showSuccess(
+            `Welcome to Frank's User Admin, ${data.username}!`
+          );
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        //show nothing, handled by inteceptor
+        this.isLoading = false;
+      });
 
     this.isLoading = false;
   }

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { NgModule } from '@angular/core';
 
@@ -11,6 +11,9 @@ import { AuthModule } from './auth/auth.module';
 /** Angular Material Modules */
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+/** Interceptors */
+import { ErrorInterceptor } from './utils/error.interceptor';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -21,7 +24,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     AuthModule,
     MatSnackBarModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
