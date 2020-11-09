@@ -5,4 +5,17 @@
   *ngIf="isLoading"
 ></mat-progress-bar>
 <app-header></app-header>
-<p>home works!</p>
+<div class="container" *ngIf="isUserAuthenticated()">
+  <div class="container-title">
+    <h1 class="mat-display-1 title-header">All Users</h1>
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Ex. Camp"
+        #input
+      />
+    </mat-form-field>
+  </div>
+</div>

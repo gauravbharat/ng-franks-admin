@@ -1,0 +1,56 @@
+.container {
+  box-sizing: border-box;
+  width: 90%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container-title {
+  text-align: center;
+}
+
+.title-header {
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+table {
+  table-layout: auto;
+  /* width: 100%; */
+  overflow-x: auto;
+  min-width: 320px;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td,
+th {
+  width: 25%;
+}
+
+/* Add media queries to reduce font when width is below 1200px */
+/* Add media queries to reduce font when width reduces */
+@media screen and (max-width: 500px) {
+  ::ng-deep .mat-header-cell,
+  ::ng-deep .mat-cell,
+  ::ng-deep .mat-footer-cell {
+    font-size: 80%;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  ::ng-deep .mat-header-cell,
+  ::ng-deep .mat-cell,
+  ::ng-deep .mat-footer-cell {
+    font-size: 60%;
+  }
+}

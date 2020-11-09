@@ -6,6 +6,7 @@ import { AdminRoutingModule } from './admin.routing';
 import { UserAdminComponent } from './user-admin/user-admin.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
+import { AdminService } from './admin.service';
 
 /** Angular Material Modules */
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -32,5 +33,6 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatDividerModule,
   ],
+  providers: [AdminService],
 })
 export class AdminModule {}
