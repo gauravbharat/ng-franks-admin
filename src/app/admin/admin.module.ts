@@ -22,13 +22,13 @@ import { MatSortModule } from '@angular/material/sort';
 import { CdkTableModule } from '@angular/cdk/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [UserAdminComponent, HomeComponent, HeaderComponent],
@@ -50,13 +50,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatPaginatorModule,
     MatTabsModule,
     MatStepperModule,
-    MatDialogModule,
     MatSlideToggleModule,
     MatTooltipModule,
     MatCheckboxModule,
     MatRadioModule,
     ReactiveFormsModule,
     DragDropModule,
+    MatDialogModule,
   ],
   providers: [AdminService],
 })

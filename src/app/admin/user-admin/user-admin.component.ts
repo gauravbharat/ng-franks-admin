@@ -32,11 +32,13 @@ export class UserAdminComponent implements OnInit, OnDestroy {
   private _authStatusSub$: Subscription;
   private _isUserAuthenticated = false;
   private _isUserAdmin = false;
+  private _currentUserId: string;
 
   @Input() selectedUser: any;
   @Input() staticData: any;
   @Output() editCompleted = new EventEmitter<boolean>();
   @Output() showLoading = new EventEmitter<boolean>();
+  @Output() refreshUser = new EventEmitter<any>();
 
   basicFormGroup = new FormGroup({});
 
@@ -66,6 +68,7 @@ export class UserAdminComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         this._isUserAuthenticated = response.authData.isUserAuthenticated;
         this._isUserAdmin = response.authData.isAdmin;
+        this._currentUserId = response.authData.userId;
       });
 
     if (this.selectedUser) {
@@ -98,16 +101,10 @@ export class UserAdminComponent implements OnInit, OnDestroy {
 
   onEditComplete(): void {
     this._updateUserData();
-    this.basicFormGroup.reset();
-    this.editCompleted.emit(true);
   }
 
   isUserAuthenticated(): boolean {
     return this._isUserAuthenticated;
-  }
-
-  isUserAdmin(): boolean {
-    return this._isUserAdmin;
   }
 
   onUpdateUserAvatar() {
@@ -153,18 +150,22 @@ export class UserAdminComponent implements OnInit, OnDestroy {
       }),
     };
 
-    console.log(this.selectedRoles);
-
     this._adminService.updateUserData(userData).subscribe(
-      (response) => {
-        this._snackbarService.showSuccess(`Update updated successfully!`);
+      async (response) => {
+        this._snackbarService.showSuccess(`User updated successfully!`);
+        await this.refreshUser.emit(userData);
+        this._clearEvents();
       },
       (error) => {
         console.log(error);
+        this._clearEvents();
       }
     );
+  }
 
+  private _clearEvents() {
     this.isLoading = false;
     this.showLoading.emit(false);
+    this.editCompleted.emit(true);
   }
 }

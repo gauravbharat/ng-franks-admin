@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const chalk = require("./utils/chalk.util");
 
 const mongoose = require("mongoose");
+const path = require("path");
 const port = process.env.PORT || 3000;
 
 const userRoutes = require("./routes/user.routes");
@@ -18,6 +19,8 @@ const init = () => {
   /** Parse incoming req.body data to json() format */
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
+  /** Recognize the build folder for the angular app */
+  app.use("/", express.static(path.join(__dirname, "angular")));
 
   /** Intercept incoming requests and allow CORS by setting following headers to -
    * Allow ANY origin access,
@@ -38,17 +41,12 @@ const init = () => {
     next();
   });
 
-  /** Recognize the build folder for the angular app */
-  app.use(express.static(__dirname + "/angular"));
-
   app.use("/api/users", userRoutes);
   app.use("", (req, res, next) => {
-    res.status(401).send("Invalid API requested!");
+    res.sendFile(path.join(__dirname, "angular", "index.html"));
   });
-
-  // app.get("", (req, res) => {
-  //   // res.render("pagenotfound");
-  //   res.render("pagenotfound");
+  // app.use("*", (req, res, next) => {
+  //   res.status(401).send("Invalid API requested!");
   // });
 };
 

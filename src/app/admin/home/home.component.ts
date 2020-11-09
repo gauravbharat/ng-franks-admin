@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private _authStatusSub$: Subscription;
   private _isUserAuthenticated = false;
   private _currentUserId: string;
+  private _allUsers: any;
 
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -87,10 +88,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
   }
 
-  async isEditCompleted($event) {
+  isEditCompleted($event) {
     this.isEditMode = !$event;
-    // Refresh user list
-    await this._getAllUsers();
+  }
+
+  async refreshUserData($event) {
+    // console.log($event);
+    this._allUsers = this._allUsers.map((user) => {
+      if (user._id === $event.userId) {
+        return {
+          ...user,
+          email: $event.email,
+          isAdmin: $event.isAdmin,
+          roles: $event.roles,
+          name: $event.name,
+        };
+      } else {
+        return user;
+      }
+    });
+
+    await this._setDataSource();
   }
 
   showLoading($event) {
@@ -100,12 +118,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   private _getAllUsers(): void {
     this._adminService.getAllUsers().subscribe(
       async (response) => {
-        // console.log(response);
-        this.dataSource = await new MatTableDataSource(response.allUsers);
-
-        this.dataSource.paginator = await this.paginator;
-        this.dataSource.sort = await this.sort;
-
+        // console.log('_getAllUsers', response);
+        this._allUsers = response.allUsers;
+        await this._setDataSource();
         this.isLoading = false;
       },
       (error) => {
@@ -113,5 +128,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     );
+  }
+
+  private async _setDataSource() {
+    this.dataSource = await new MatTableDataSource(this._allUsers);
+    this.dataSource.paginator = await this.paginator;
+    this.dataSource.sort = await this.sort;
   }
 }

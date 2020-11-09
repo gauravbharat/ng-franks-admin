@@ -34,7 +34,7 @@
         type="button"
         color="primary"
         class="button-change-password"
-        *ngIf="isUserAuthenticated() && isUserAdmin()"
+        *ngIf="isUserAuthenticated()"
         (click)="onChangePassword()"
         [disabled]="isLoading"
       >
@@ -184,7 +184,7 @@
             </mat-step>
           </mat-vertical-stepper>
         </mat-tab>
-        <mat-tab label="Placeholder"></mat-tab>
+        <mat-tab label="Placeholder" [disabled]="true"></mat-tab>
       </mat-tab-group>
     </div>
   </div>

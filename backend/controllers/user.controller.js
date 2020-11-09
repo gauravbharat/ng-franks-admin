@@ -12,6 +12,14 @@ const { Member } = require("../models/member.model");
 
 exports.getAllUsers = async (req, res, next) => {
   try {
+    const currentUser = await User.findOne({ _id: req.userData.userId });
+
+    if (!currentUser || !currentUser.isAdmin) {
+      return res.status(401).json({
+        message: "Unauthorized Access!",
+      });
+    }
+
     const allUsers = await User.find({});
 
     res.status(200).json({
@@ -39,7 +47,7 @@ exports.loginUser = async (req, res, next) => {
     );
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
   // HARD-CODED VALUES
   // req.body = {
@@ -53,6 +61,12 @@ exports.loginUser = async (req, res, next) => {
       req.body.email,
       req.body.password
     );
+
+    if (!user.isAdmin) {
+      return res.status(401).json({
+        message: "Unauthorized Access!",
+      });
+    }
 
     const token = await generateToken(user._id, user.username);
 
@@ -70,6 +84,14 @@ exports.loginUser = async (req, res, next) => {
 };
 exports.getUserEditData = async (req, res, next) => {
   try {
+    const currentUser = await User.findOne({ _id: req.userData.userId });
+
+    if (!currentUser || !currentUser.isAdmin) {
+      return res.status(401).json({
+        message: "Unauthorized Access!",
+      });
+    }
+
     const allHoldingOrgs = await Holding.find({});
     const allMemberOrgs = await Member.find({});
     const allUserRoles = await Role.find({});
@@ -93,6 +115,14 @@ exports.getUserEditData = async (req, res, next) => {
 
 exports.updateUserData = async (req, res, next) => {
   try {
+    const currentUser = await User.findOne({ _id: req.userData.userId });
+
+    if (!currentUser || !currentUser.isAdmin) {
+      return res.status(401).json({
+        message: "Unauthorized Access!",
+      });
+    }
+
     const user = await User.findOne({ _id: req.body.userId });
 
     if (!user) {
@@ -117,7 +147,7 @@ exports.updateUserData = async (req, res, next) => {
       res.status(401).json({ message: "user update failed!" });
     }
 
-    console.log(result.n);
+    // console.log(result.n);
   } catch (error) {
     return returnError(
       "update-user-data",

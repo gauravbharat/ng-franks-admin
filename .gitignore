@@ -43,6 +43,7 @@ testem.log
 .env 
 config/
 backend/config/
+backend/angular/
 
 # System Files
 .DS_Store
