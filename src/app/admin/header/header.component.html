@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">
+  <span>
+    <a routerLink="/">Frank's User Admin</a>
+  </span>
+  <span class="spacer"></span>
+  <ul>
+    <!-- Apply mat-accent color when link is active -->
+    <li *ngIf="isUserAuthenticated">
+      <a mat-button routerLink="/admin" routerLinkActive="mat-accent"> Home </a>
+    </li>
+    <li *ngIf="isUserAuthenticated">
+      <button mat-button (click)="onLogout()">Logout</button>
+    </li>
+  </ul>
+</mat-toolbar>

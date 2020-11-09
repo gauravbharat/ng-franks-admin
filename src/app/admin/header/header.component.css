@@ -1,0 +1,20 @@
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+ul {
+  display: flex;
+}
+
+/* mat-toolbar uses flex by default, make sure the in-between spacer class component
+occupies the remaining space, between 'Franks User Admin' and other RTL links  */
+.spacer {
+  flex: 1 1 auto;
+}

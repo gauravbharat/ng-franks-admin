@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  isLoading = true;
   private _authStatusSub$: Subscription;
 
   constructor(private _authService: AuthService) {}
@@ -19,6 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         console.log(response);
       });
+
+    this.isLoading = false;
   }
 
   ngOnDestroy(): void {
