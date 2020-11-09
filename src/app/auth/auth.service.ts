@@ -43,6 +43,10 @@ export class AuthService {
     return this._authStatusListener.asObservable();
   }
 
+  getToken() {
+    return this._currentUser?.token;
+  }
+
   login(authData: AuthData) {
     // Returning a promise instead of subscription, because we need to do
     // some processing here on the result

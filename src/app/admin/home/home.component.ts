@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._adminService.getAllUsers().subscribe(
       async (response) => {
+        console.log(response);
         this.dataSource = await new MatTableDataSource(response.allUsers);
 
         this.dataSource.paginator = await this.paginator;
