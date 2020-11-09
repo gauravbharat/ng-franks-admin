@@ -90,3 +90,41 @@ exports.getUserEditData = async (req, res, next) => {
     );
   }
 };
+
+exports.updateUserData = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.body.userId });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid user!",
+      });
+    }
+
+    let result = await User.updateOne(
+      { _id: req.body.userId },
+      {
+        name: req.body.name,
+        email: req.body.email,
+        isAdmin: req.body.isAdmin,
+        roles: req.body.roles,
+      }
+    );
+
+    if (result.n > 0) {
+      res.status(200).json({ message: "User updated!" });
+    } else {
+      res.status(401).json({ message: "user update failed!" });
+    }
+
+    console.log(result.n);
+  } catch (error) {
+    return returnError(
+      "update-user-data",
+      error,
+      500,
+      "Error updating user data!",
+      res
+    );
+  }
+};

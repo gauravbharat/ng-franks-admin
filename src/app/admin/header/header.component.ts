@@ -1,4 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Output,
+  EventEmitter,
+  Input,
+} from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -10,10 +18,12 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isLoading = true;
+  @Input() isEditMode: boolean;
   private _authStatusSub$: Subscription;
   private _isUserAuthenticated = false;
+  @Output() editCompleted = new EventEmitter<boolean>();
 
-  constructor(private _authService: AuthService) {}
+  constructor(private _authService: AuthService, private _router: Router) {}
 
   ngOnInit(): void {
     this._authStatusSub$ = this._authService
@@ -35,5 +45,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLogout() {
     this._authService.logout();
+  }
+
+  onHome() {
+    this.editCompleted.emit(true);
+    this._router.navigate(['/admin']);
   }
 }

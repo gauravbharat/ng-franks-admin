@@ -13,6 +13,7 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard],
   },
+  { path: '**', component: LoginComponent },
 ];
 
 // Add AuthGuard to providers

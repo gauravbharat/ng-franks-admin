@@ -14,4 +14,14 @@ export class AdminService {
       `${API_URL}/users/all`
     );
   }
+
+  getStaticData(): Observable<any> {
+    return this._http.get<{ message: string; allUsers: any }>(
+      `${API_URL}/users/statics`
+    );
+  }
+
+  updateUserData(updateData: any) {
+    return this._http.post(`${API_URL}/users/update`, updateData);
+  }
 }

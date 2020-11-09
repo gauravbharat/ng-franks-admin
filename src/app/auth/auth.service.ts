@@ -15,6 +15,7 @@ interface AuthListenerData {
   avatar: string;
   name: string;
   token: string;
+  isAdmin: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,6 +32,7 @@ export class AuthService {
       avatar: null,
       name: null,
       token: null,
+      isAdmin: false,
     },
   });
 
@@ -57,7 +59,7 @@ export class AuthService {
           (response) => {
             if (response.userData.token) {
               this._currentUser = response.userData;
-              console.log(this._currentUser);
+              // console.log(this._currentUser);
 
               this._setAuthTimer(response.userData.expiresIn);
 
@@ -94,7 +96,7 @@ export class AuthService {
 
   private _updateListener(authRequestType: AuthType) {
     if (authRequestType === AuthType.UPDATE_USER) {
-      const { username, _id, avatar, name } = this._currentUser.user;
+      const { username, _id, avatar, name, isAdmin } = this._currentUser.user;
 
       this._authStatusListener.next({
         authData: {
@@ -104,6 +106,7 @@ export class AuthService {
           avatar,
           name,
           token: this._currentUser.token,
+          isAdmin,
         },
       });
     } else {
@@ -115,6 +118,7 @@ export class AuthService {
           avatar: null,
           name: null,
           token: null,
+          isAdmin: false,
         },
       });
     }
@@ -150,6 +154,7 @@ export class AuthService {
     localStorage.removeItem('username');
     localStorage.removeItem('avatar');
     localStorage.removeItem('name');
+    localStorage.removeItem('admin');
   }
 
   private _getAuthData() {

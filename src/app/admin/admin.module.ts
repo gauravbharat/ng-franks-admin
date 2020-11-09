@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AdminRoutingModule } from './admin.routing';
 import { UserAdminComponent } from './user-admin/user-admin.component';
@@ -17,6 +17,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { CdkTableModule } from '@angular/cdk/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [UserAdminComponent, HomeComponent, HeaderComponent],
@@ -32,6 +44,19 @@ import { MatDividerModule } from '@angular/material/divider';
     MatFormFieldModule,
     MatIconModule,
     MatDividerModule,
+    MatTableModule,
+    MatSortModule,
+    CdkTableModule,
+    MatPaginatorModule,
+    MatTabsModule,
+    MatStepperModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    ReactiveFormsModule,
+    DragDropModule,
   ],
   providers: [AdminService],
 })

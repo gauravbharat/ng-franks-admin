@@ -1,1 +1,191 @@
-<p>user-admin works!</p>
+<div class="container-user">
+  <div class="container-side-panel">
+    <mat-card>
+      <div [ngClass]="'imagehandler'">
+        <img
+          mat-card-image
+          [src]="selectedUser?.avatar"
+          [alt]="selectedUser?.username"
+        />
+        <button
+          mat-icon-button
+          class="topright"
+          color="primary"
+          [disabled]="isLoading"
+        >
+          <mat-icon
+            [inline]="true"
+            aria-hidden="false"
+            aria-label="change user avatar camera icon"
+            (click)="!isLoading && onUpdateUserAvatar()"
+            >camera_alt</mat-icon
+          >
+        </button>
+      </div>
+      <mat-card-title>
+        {{ selectedUser?.name }}
+      </mat-card-title>
+      <mat-card-subtitle class="author-username"
+        >@{{ selectedUser?.username }}</mat-card-subtitle
+      >
+      <mat-card-subtitle>{{ selectedUser?.email }}</mat-card-subtitle>
+      <button
+        mat-raised-button
+        type="button"
+        color="primary"
+        class="button-change-password"
+        *ngIf="isUserAuthenticated() && isUserAdmin()"
+        (click)="onChangePassword()"
+        [disabled]="isLoading"
+      >
+        Change Password
+      </button>
+    </mat-card>
+    <br />
+    <mat-card>
+      <mat-card-subtitle>Recent Activites</mat-card-subtitle>
+    </mat-card>
+  </div>
+
+  <div class="container-tabs">
+    <div class="current-user-details">
+      <mat-tab-group animationDuration="0ms" [(selectedIndex)]="selectIndex">
+        <mat-tab label="Settings">
+          <mat-vertical-stepper class="settings-stepper" #stepper>
+            <mat-step label="Basic Information" state="basic">
+              <form [formGroup]="basicFormGroup" class="user-settings-form">
+                <mat-form-field>
+                  <mat-label>@username *</mat-label>
+                  <input matInput formControlName="username" />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Name *</mat-label>
+                  <input matInput formControlName="name" />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>E-mail *</mat-label>
+                  <input matInput formControlName="email" />
+                  <mat-hint
+                    >Enter a valid e-mail ID to help you recover user password,
+                    just in case</mat-hint
+                  >
+                </mat-form-field>
+                <mat-slide-toggle
+                  color="accent"
+                  formControlName="isAdmin"
+                  #isAdmin
+                  ><span class="mat-slide-toggle-text">
+                    Is an Admin:
+                    {{ isAdmin.checked ? "YES" : "NO" }}</span
+                  >
+                </mat-slide-toggle>
+                <div>
+                  <button
+                    color="primary"
+                    type="button"
+                    mat-button
+                    matStepperNext
+                  >
+                    Next
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step label="User Roles" state="roles">
+              <div cdkDropListGroup>
+                <div class="cdkDragDrop-container">
+                  <h2>Available User Roles</h2>
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="availableRoles"
+                    class="cdkDragDrop-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="cdkDragDrop-box"
+                      *ngFor="let item of availableRoles"
+                      cdkDrag
+                    >
+                      {{ item.roleCode }} {{ item.roleName }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cdkDragDrop-container">
+                  <h2>Granted Roles</h2>
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="selectedRoles"
+                    class="cdkDragDrop-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="cdkDragDrop-box"
+                      *ngFor="let item of selectedRoles"
+                      cdkDrag
+                    >
+                      {{ item?.roleCode }} {{ item?.roleName }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  color="primary"
+                  mat-button
+                  matStepperPrevious
+                >
+                  Back
+                </button>
+                <button color="primary" type="button" mat-button matStepperNext>
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <mat-step label="User Orgs" state="orgs">
+              <h3>*** WIP ***</h3>
+              <div>
+                <button
+                  type="button"
+                  color="primary"
+                  mat-button
+                  matStepperPrevious
+                >
+                  Back
+                </button>
+                <button color="primary" type="button" mat-button matStepperNext>
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <mat-step label="Save Changes" state="save">
+              <div>
+                <button
+                  color="primary"
+                  type="button"
+                  mat-button
+                  matStepperPrevious
+                >
+                  Back
+                </button>
+                <button
+                  mat-button
+                  type="submit"
+                  color="primary"
+                  [disabled]="isLoading"
+                  (click)="onEditComplete()"
+                >
+                  Update
+                </button>
+              </div>
+            </mat-step>
+          </mat-vertical-stepper>
+        </mat-tab>
+        <mat-tab label="Placeholder"></mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

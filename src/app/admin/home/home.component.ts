@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  OnDestroy,
+  AfterViewInit,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,12 +14,15 @@ import { AuthService } from '../../auth/auth.service';
 import { AdminService } from '../admin.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-admin-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLoading = true;
+  isEditMode = false;
+  selectedUser: any;
+  staticData: any;
   private _authStatusSub$: Subscription;
   private _isUserAuthenticated = false;
   private _currentUserId: string;
@@ -28,6 +37,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isEditMode = false;
+
     this._authStatusSub$ = this._authService
       .getAuthStatusListener()
       .subscribe((response) => {
@@ -35,19 +46,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         this._currentUserId = response.authData.userId;
       });
 
-    this._adminService.getAllUsers().subscribe(
-      async (response) => {
-        console.log(response);
-        this.dataSource = await new MatTableDataSource(response.allUsers);
+    this._getAllUsers();
 
-        this.dataSource.paginator = await this.paginator;
-        this.dataSource.sort = await this.sort;
-
-        this.isLoading = false;
+    this._adminService.getStaticData().subscribe(
+      (response) => {
+        this.staticData = response;
       },
       (error) => {
-        this.isLoading = false;
         console.log(error);
+        this.isLoading = false;
       }
     );
 
@@ -73,5 +80,38 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  currentRow(row: any): void {
+    this.selectedUser = row;
+    this.isEditMode = true;
+  }
+
+  async isEditCompleted($event) {
+    this.isEditMode = !$event;
+    // Refresh user list
+    await this._getAllUsers();
+  }
+
+  showLoading($event) {
+    this.isLoading = $event;
+  }
+
+  private _getAllUsers(): void {
+    this._adminService.getAllUsers().subscribe(
+      async (response) => {
+        // console.log(response);
+        this.dataSource = await new MatTableDataSource(response.allUsers);
+
+        this.dataSource.paginator = await this.paginator;
+        this.dataSource.sort = await this.sort;
+
+        this.isLoading = false;
+      },
+      (error) => {
+        this.isLoading = false;
+        console.log(error);
+      }
+    );
   }
 }

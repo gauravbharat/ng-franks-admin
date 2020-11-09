@@ -10,6 +10,8 @@ router.get("/all", checkAuth, UserController.getAllUsers);
 router.post("/login", UserController.loginUser);
 
 // Get all static data for user edits
-router.get("/edit-data", checkAuth, UserController.getUserEditData);
+router.get("/statics", checkAuth, UserController.getUserEditData);
+
+router.post("/update", checkAuth, UserController.updateUserData);
 
 module.exports = router;

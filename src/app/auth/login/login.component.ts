@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../auth.service';
 import { AuthData } from '../../app.constants';
@@ -12,25 +14,35 @@ import { SnackbarService } from '../../utils/snackbar.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   isLoading = true;
   hide = false;
   username: String;
   email: String;
   authData: AuthData;
+  private _authStatusSub$: Subscription;
 
   constructor(
     private _authService: AuthService,
-    private _snackbarService: SnackbarService
+    private _snackbarService: SnackbarService,
+    private _router: Router
   ) {}
 
   ngOnInit(): void {
+    this._authStatusSub$ = this._authService
+      .getAuthStatusListener()
+      .subscribe((response) => {
+        if (response.authData.isUserAuthenticated) {
+          this._router.navigate(['/admin']);
+        }
+      });
+
     this.isLoading = false;
   }
 
-  // ngOnDestroy(): void {
-  //   console.log('inside ngOnDestroy');
-  // }
+  ngOnDestroy(): void {
+    this._authStatusSub$.unsubscribe();
+  }
 
   onLogin(form: NgForm) {
     if (form.invalid) return;

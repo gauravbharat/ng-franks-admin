@@ -32,6 +32,24 @@ th.mat-sort-header-sorted {
   width: 100%;
 }
 
+.user-avatar img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: opacity 0.5s;
+}
+
+.username {
+  margin-left: 5px;
+  text-align: center;
+  vertical-align: auto;
+}
+
+.hover:hover {
+  cursor: pointer;
+}
+
 td,
 th {
   width: 25%;
